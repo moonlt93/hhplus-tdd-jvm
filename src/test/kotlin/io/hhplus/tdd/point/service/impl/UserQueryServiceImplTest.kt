@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 
-class UserServiceImplTest: BehaviorSpec({
+class UserQueryServiceImplTest: BehaviorSpec({
     given(" UserPointTable with data") {
         val userPointTable = UserPointTable()
 

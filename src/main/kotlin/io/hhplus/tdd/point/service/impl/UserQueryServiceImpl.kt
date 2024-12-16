@@ -6,7 +6,7 @@ import io.hhplus.tdd.point.service.UserQueryService
 import org.springframework.stereotype.Service
 
 @Service
-class UserServiceImpl(private val pointTable: UserPointTable) : UserQueryService<UserPoint> {
+class UserQueryServiceImpl(private val pointTable: UserPointTable) : UserQueryService<UserPoint> {
 
     override fun getUserInfoById(id: Long): UserPoint {
         return pointTable.selectById(id);
