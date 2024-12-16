@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+
+    // ktLint 적용
+    id("org.jlleitschuh.gradle.ktlint").version("12.1.1")
+    id("io.kotest.multiplatform") version "5.0.2"
     id("jacoco")
 }
 
@@ -18,12 +22,21 @@ dependencyManagement {
     }
 }
 
+val version = "5.9.1"
+
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
     implementation(libs.spring.boot.starter.web)
     annotationProcessor(libs.spring.boot.configuration.processor)
     testImplementation(libs.spring.boot.starter.test)
+
+    /* koTest 의존성 추가 */
+    testImplementation("io.mockk:mockk:1.13.5")
+    testImplementation("io.kotest:kotest-runner-junit5:$version")
+    testImplementation("io.kotest:kotest-assertions-core:$version")
+    testImplementation("io.kotest:kotest-property:$version")
 }
 
 // about source and compilation
@@ -54,3 +67,7 @@ tasks.test {
     ignoreFailures = true
     useJUnitPlatform()
 }
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
