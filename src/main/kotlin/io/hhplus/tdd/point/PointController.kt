@@ -1,12 +1,14 @@
 package io.hhplus.tdd.point
 
+import io.hhplus.tdd.point.service.UserCommandService
+import io.hhplus.tdd.point.service.UserQueryService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/point")
-class PointController {
+class PointController(private val userQueryService: UserQueryService<UserPoint>, private val userCommandService: UserCommandService<UserPoint>) {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     /**
@@ -16,7 +18,7 @@ class PointController {
     fun point(
         @PathVariable id: Long,
     ): UserPoint {
-        return UserPoint(0, 0, 0)
+        return userQueryService.getUserInfoById(id)
     }
 
     /**
