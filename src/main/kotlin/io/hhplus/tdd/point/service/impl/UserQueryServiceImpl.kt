@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserQueryServiceImpl(private val pointTable: UserPointTable) : UserQueryService<UserPoint> {
 
-    override fun getUserInfoById(id: Long): UserPoint {
+    override fun getUserPointInfoById(id: Long): UserPoint {
         return pointTable.selectById(id);
     }
 
