@@ -23,7 +23,7 @@ class PointController(
     fun point(
         @PathVariable id: Long,
     ): UserPoint {
-        return userQueryService.getUserInfoById(id)
+        return userQueryService.getUserPointInfoById(id)
     }
 
     /**
