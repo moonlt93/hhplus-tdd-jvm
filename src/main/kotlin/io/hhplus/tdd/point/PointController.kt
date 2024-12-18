@@ -48,7 +48,9 @@ class PointController(
         @PathVariable id: Long,
         @RequestParam amount: Long,
     ): UserPoint {
+
         return userCommandService.chargeUserPointById(id, amount)
+
     }
 
     /**
@@ -59,6 +61,8 @@ class PointController(
         @PathVariable id: Long,
         @RequestParam amount: Long,
     ): UserPoint {
+
         return userCommandService.useUserPointById(id, amount)
+
     }
 }
