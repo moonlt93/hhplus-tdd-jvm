@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point
 
+import io.hhplus.tdd.point.service.GetUserHistoryUseCase
 import io.hhplus.tdd.point.service.UserCommandService
 import io.hhplus.tdd.point.service.UserQueryService
 import org.slf4j.Logger
@@ -8,7 +9,11 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/point")
-class PointController(private val userQueryService: UserQueryService<UserPoint>, private val userCommandService: UserCommandService<UserPoint>) {
+class PointController(
+    private val userQueryService: UserQueryService<UserPoint>,
+    private val userCommandService: UserCommandService<UserPoint>,
+    private val getUserHistoryUseCase: GetUserHistoryUseCase<PointHistory>
+) {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     /**
@@ -28,7 +33,7 @@ class PointController(private val userQueryService: UserQueryService<UserPoint>,
     fun history(
         @PathVariable id: Long,
     ): List<PointHistory> {
-        return emptyList()
+        return getUserHistoryUseCase.getUserPointHistory(id)
     }
 
     /**
@@ -37,9 +42,9 @@ class PointController(private val userQueryService: UserQueryService<UserPoint>,
     @PatchMapping("{id}/charge")
     fun charge(
         @PathVariable id: Long,
-        @RequestBody amount: Long,
+        @RequestParam amount: Long,
     ): UserPoint {
-        return UserPoint(0, 0, 0)
+        return userCommandService.chargeUserPointById(id, amount)
     }
 
     /**
@@ -48,8 +53,8 @@ class PointController(private val userQueryService: UserQueryService<UserPoint>,
     @PatchMapping("{id}/use")
     fun use(
         @PathVariable id: Long,
-        @RequestBody amount: Long,
+        @RequestParam amount: Long,
     ): UserPoint {
-        return UserPoint(0, 0, 0)
+        return userCommandService.useUserPointById(id, amount)
     }
 }
