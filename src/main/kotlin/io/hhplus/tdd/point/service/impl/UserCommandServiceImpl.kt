@@ -71,9 +71,14 @@ class UserCommandServiceImpl(
         amount: Long,
     ): UserPoint {
 
+        if (amount <= 0) {
+            throw IllegalArgumentException("요청한 amount가 0이하 입니다.")
+        }
+
         print(logger.name + "chargeUserPointById attach")
 
-        val insertPointHistory = pointHistoryTable.insert(id, amount, TransactionType.CHARGE, System.currentTimeMillis())
+        val insertPointHistory =
+            pointHistoryTable.insert(id, amount, TransactionType.CHARGE, System.currentTimeMillis())
         val userPoint = pointTable.insertOrUpdate(insertPointHistory.id, insertPointHistory.amount)
 
         return userPoint
