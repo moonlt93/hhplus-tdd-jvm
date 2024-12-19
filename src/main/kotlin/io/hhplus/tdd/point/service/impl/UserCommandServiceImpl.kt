@@ -8,6 +8,8 @@ import io.hhplus.tdd.point.service.UserCommandService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 @Service
 class UserCommandServiceImpl(
@@ -16,38 +18,21 @@ class UserCommandServiceImpl(
 ) : UserCommandService<UserPoint> {
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
+    private val lock = ReentrantLock()
 
     override fun chargeUserPointById(id: Long, amount: Long): UserPoint {
 
-        var userPoint: UserPoint? = null
-
-        try {
-
-            userPoint = chargeUserPoint(id, amount)
-
-        } catch (e: Exception) {
-
-            throw Exception(e.message);
+        return lock.withLock {
+            chargeUserPoint(id, amount)
         }
 
-        return userPoint
     }
-
 
     override fun useUserPointById(id: Long, amount: Long): UserPoint {
 
-        var userPoint: UserPoint? = null
-
-        try {
-
-            userPoint = useUserPoint(id, amount)
-
-        } catch (e: Exception) {
-
-            throw IllegalArgumentException(e.message);
+        return lock.withLock {
+            useUserPoint(id, amount)
         }
-
-        return userPoint
 
     }
 
@@ -56,12 +41,15 @@ class UserCommandServiceImpl(
 
         if (selectById.point < amount) {
 
-            throw IllegalArgumentException("들어온 input amount가 id로 조회한 포인트보다 많습니다.")
+            throw IllegalArgumentException("사용하려는 point amount가 id로 조회한 포인트보다 많습니다.")
 
         }
 
         pointHistoryTable.insert(id, amount, TransactionType.USE, System.currentTimeMillis())
+
         selectById.point -= amount
+
+        logger.info("회원 id {} 포인트가 차감되었습니다. : {}" + "남은 포인트는  {} 입니다.", id, amount, selectById.point)
 
         return pointTable.insertOrUpdate(selectById.id, selectById.point)
     }
