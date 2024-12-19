@@ -11,7 +11,9 @@ class UserHistoryServiceImpl(
 ) : GetUserHistoryUseCase<PointHistory> {
 
     override fun getUserPointHistory(id: Long): List<PointHistory> {
+
         return pointHistoryTable.selectAllByUserId(id)
+
     }
 
 }

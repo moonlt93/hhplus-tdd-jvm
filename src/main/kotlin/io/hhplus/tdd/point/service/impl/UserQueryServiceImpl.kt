@@ -12,5 +12,4 @@ class UserQueryServiceImpl(private val pointTable: UserPointTable) : UserQuerySe
         return pointTable.selectById(id);
     }
 
-
 }
