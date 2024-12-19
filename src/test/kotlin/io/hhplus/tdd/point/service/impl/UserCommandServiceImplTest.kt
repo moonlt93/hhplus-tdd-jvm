@@ -67,23 +67,19 @@ class UserCommandServiceImplTest {
     @Test
     @DisplayName(" 포인트가 부족할 때 예외 발생 검증  ")
     fun `useUserPointById do well minus amount`() {
-        // Given
+
         val userId = 1L
         val chargeAmount = 100L
         val excessiveAmount = 200L
 
-        // 초기 포인트 충전
         userCommandService.chargeUserPointById(userId, chargeAmount)
 
-        // When & Then
         val exception = assertThrows<IllegalArgumentException> {
             userCommandService.useUserPointById(userId, excessiveAmount)
         }
 
-        // 예외 메시지 검증
-        assertThat(exception.message).isEqualTo("들어온 input amount가 id로 조회한 포인트보다 많습니다.")
+        assertThat(exception.message).isEqualTo("사용하려는 point amount가 id로 조회한 포인트보다 많습니다.")
 
-        // 포인트가 변경되지 않았는지 확인
         val userPoint = userPointTable.selectById(userId)
         val selectAllByUserId = pointHistoryTable.selectAllByUserId(userId)
         assertThat(userPoint.point).isEqualTo(chargeAmount)
@@ -97,6 +93,36 @@ class UserCommandServiceImplTest {
 
         val threadCount = 10
         val iterationsPerThread = 100
+
+        concurrencyTest(threadCount, iterationsPerThread)
+
+        val finalPoint = userPointTable.selectById(1L) // 포인트 조회 메서드
+        assertEquals(0, finalPoint.point, "User point mismatch")
+
+    }
+
+
+    @Test
+    @DisplayName("동시성 이슈 test - 포인트 차감 후 추가 요청 시 예외 발생 확인")
+    fun `Concurrency Problem test with exception`() {
+
+        val threadCount = 10
+        val iterationsPerThread = 100
+
+        concurrencyTest(threadCount, iterationsPerThread)
+
+        val finalPoint = userPointTable.selectById(1L) // 포인트 조회 메서드
+        assertEquals(0, finalPoint.point, "User point mismatch")
+
+        val exception = assertThrows<IllegalArgumentException> {
+            userCommandService.useUserPointById(1L, 10)
+        }
+
+        assertEquals("사용하려는 point amount가 id로 조회한 포인트보다 많습니다.", exception.message)
+    }
+
+
+    private fun concurrencyTest(threadCount: Int, iterationsPerThread: Int) {
 
         userCommandService.chargeUserPointById(1L, threadCount * iterationsPerThread * 10L)
 
@@ -116,13 +142,7 @@ class UserCommandServiceImplTest {
         // 스레드가 모두 작업을 끝낼 때까지 대기
         executor.shutdown()
         executor.awaitTermination(1, TimeUnit.MINUTES)
-
-        // 예상 결과 확인
-        val finalPoint = userPointTable.selectById(1L) // 포인트 조회 메서드
-        assertEquals(0, finalPoint.point, "User point mismatch")
-
     }
-
 
 }
 

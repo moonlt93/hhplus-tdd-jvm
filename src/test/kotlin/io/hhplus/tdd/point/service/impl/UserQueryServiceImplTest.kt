@@ -39,5 +39,4 @@ class UserQueryServiceImplTest: BehaviorSpec({
         result.point shouldBe 0
     }
 
-
 }
