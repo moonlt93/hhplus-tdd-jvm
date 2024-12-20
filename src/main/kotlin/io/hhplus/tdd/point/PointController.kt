@@ -23,7 +23,9 @@ class PointController(
     fun point(
         @PathVariable id: Long,
     ): UserPoint {
+
         return userQueryService.getUserPointInfoById(id)
+
     }
 
     /**
@@ -33,7 +35,9 @@ class PointController(
     fun history(
         @PathVariable id: Long,
     ): List<PointHistory> {
+
         return getUserHistoryUseCase.getUserPointHistory(id)
+
     }
 
     /**
@@ -44,7 +48,9 @@ class PointController(
         @PathVariable id: Long,
         @RequestParam amount: Long,
     ): UserPoint {
+
         return userCommandService.chargeUserPointById(id, amount)
+
     }
 
     /**
@@ -55,6 +61,8 @@ class PointController(
         @PathVariable id: Long,
         @RequestParam amount: Long,
     ): UserPoint {
+
         return userCommandService.useUserPointById(id, amount)
+
     }
 }

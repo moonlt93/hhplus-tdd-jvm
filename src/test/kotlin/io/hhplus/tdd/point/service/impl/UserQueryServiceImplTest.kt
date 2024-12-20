@@ -24,6 +24,7 @@ class UserQueryServiceImplTest: BehaviorSpec({
         }
     }
 }) {
+
     @Test
     @DisplayName("mock 객체로 userId 조회시 값이 어떻게 넘어오는지 테스트 ")
     fun `should return correct user point`() {
