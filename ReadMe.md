@@ -40,6 +40,7 @@ ReentrantLock을 적용하게 된 이유는 다음과 같습니다.
 짧게 가져갔을때 락 획득 및 해제가 용이하고 시간제한이 있어서 데드락을 방지할 수 있는 ReentrantLock 을 사용해야겠다 판단하였습니다.
 
 \\\
+
     private val lock = ReentrantLock()
 
     override fun useUserPointById(id: Long, amount: Long): UserPoint {
