@@ -1,0 +1,16 @@
+### id
+@userId = 1
+
+### point 조회
+GET http://localhost:8080/point/{{userId}}
+
+### point 내역 조회
+GET http://localhost:8080/point/{{userId}}/histories
+
+### point 충전
+PATCH http://localhost:8080/point/{{userId}}/charge?amount = 1000
+Content-Type: application/json
+
+### point 사용
+PATCH http://localhost:8080/point/{{userId}}/use?amount = 100
+Content-Type: application/json
